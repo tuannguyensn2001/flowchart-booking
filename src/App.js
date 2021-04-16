@@ -1,25 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import Main from "./features/wfDefDetail/Main";
+import 'antd/dist/antd.css';
+import {BrowserRouter,Route,Switch} from "react-router-dom";
+import wfProcess from './features/wfProcess/index'
+import wfThread from './features/wfThread/index';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+function App()
+{
+  return(
+      <BrowserRouter>
+          {/* eslint-disable-next-line react/jsx-no-undef */}
+          <Switch>
+              <Route exact path={'/wf-defs/:id'} component={Main}/>
+              <Route exact path={'/wf-processes/:id'} component={wfProcess} />
+              <Route path={'/job-details/:id'} component={wfThread} />
+          </Switch>
+      </BrowserRouter>
+  )
 }
 
 export default App;
