@@ -23,7 +23,8 @@ export const handleResponseNodeConnection = (data) => {
             source,
             target,
             arrowHeadType: 'arrow',
-            isThread: connection.isThread
+            isThread: connection.isThread,
+            data: connection
         }
     })
 

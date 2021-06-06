@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {useParams} from 'react-router-dom';
 import {getJobDetailThread} from "./services";
 import ReactFlow, {
@@ -10,12 +10,18 @@ import ReactFlow, {
 } from "react-flow-renderer";
 import {handleResponseNodeConnection} from "../../helpers/handleAPIReponseGraph";
 import {useQuery} from "../../hooks";
+import styled from 'styled-components';
+import CustomNode from "../../components/CustomNode";
+
+
+const nodeTypes = {
+    special: CustomNode,
+}
+
 
 function Main() {
     const {id} = useParams();
     const [elements, setElements] = useState([]);
-    const thread_id = useQuery().get('thread');
-
     useEffect(() => {
 
         getJobDetailThread(id)
@@ -36,49 +42,58 @@ function Main() {
                     const mapNode = node.map(item => {
                         const def = item.data.def;
 
-                        const actions = ['START','COMPLETE'];
-
+                        const actions = ['START', 'COMPLETE'];
 
 
                         let color;
                         let backgroundColor;
                         let type;
 
-                        if (def.actions === 'START'){
+                        if (def.actions === 'START') {
                             type = 'input';
-                        } else if(def.actions === 'COMPLETE'){
+                        } else if (def.actions === 'COMPLETE') {
                             type = 'output';
+                        } else {
+                            type = 'special';
                         }
 
                         if (def.state === 'APPROVED') {
                             color = '#fff';
                             backgroundColor = '#21A843';
-                        } else if(def.state === 'IN_REVIEW'){
+                        } else if (def.state === 'IN_REVIEW') {
                             color = '#fff';
                             backgroundColor = '#FF851B';
-                        }
-                        else if(def.state === 'REJECT') {
+                        } else if (def.state === 'REJECT') {
                             color = '#fff';
                             backgroundColor = '#DD4B39';
-                        } else if (def.state === 'NEED_UPDATE'){
+                        } else if (def.state === 'NEED_UPDATE') {
                             color = '#fff';
                             backgroundColor = '#FF851B';
-                        } else if (def.state === 'PENDING'){
-                            color =  '#fff';
+                        } else if (def.state === 'PENDING') {
+                            color = '#fff';
                             backgroundColor = '#7F7F7F';
-                        }
-                        else {
+                        } else {
                             backgroundColor = '#fff';
                             color = '#000';
                         }
                         return {
                             ...item,
-                            style: {
-                                color,
-                                backgroundColor,
-                                boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
-                                borderRadius: '2px',
-                                border: 'none',
+                            // style: {
+                            //     color,
+                            //     backgroundColor,
+                            //     boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
+                            //     borderRadius: '2px',
+                            //     border: 'none',
+                            // },
+                            data: {
+                                ...item.data,
+                                style: {
+                                    color,
+                                    backgroundColor,
+                                    boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
+                                    borderRadius: '2px',
+                                    border: 'none',
+                                }
                             },
                             type,
                             animated: true,
@@ -95,9 +110,12 @@ function Main() {
         <div>
             <ReactFlowProvider>
                 <ReactFlow
-                    onNodeMouseEnter={() => console.log('hover')}
                     style={{height: 500, width: '100%'}}
-                    elements={elements}>
+                    elements={elements}
+                    nodeTypes={{
+                        special: CustomNode
+                    }}
+                >
                     <Background
                         variant="dots"
                     />
@@ -118,8 +136,11 @@ function Main() {
                     />
                     <Controls/>
 
+
                 </ReactFlow>
+
             </ReactFlowProvider>
+
         </div>
     )
 }
